@@ -1,4 +1,4 @@
-# Real-Time Person Detection and Tracking using YOLOv8
+#  Person Detection and Time-Counter using YOLOv8
 
 Real-Time Person Detection and Tracking using YOLOv8 is a project that utilizes OpenCV to connect to an RTSP video stream, process object tracks, and interactively select bounding boxes with mouse clicks. It features the ability to connect to an RTSP stream, process object tracks, display bounding boxes, click on bounding boxes to select them, display a timer on the selected bounding box, and maintain the selected bounding box for a specified grace period if detection is temporarily skipped.
 
