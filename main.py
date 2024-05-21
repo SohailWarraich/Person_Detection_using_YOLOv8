@@ -8,6 +8,8 @@ model = YOLO("yolov8n.pt")
 
 ## Initialize Video Capture ##
 try:
+    # url = 'rtsp://192.168.100.4:8080/h264_ulaw.sdp'
+    # cap = cv2.VideoCapture(url)
     # For Test Sample Video
     cap = cv2.VideoCapture("input_video/video2.mp4")
 except:
@@ -50,6 +52,14 @@ track_ids = []
 last_seen_frame = {}  # Keep track of the last frame each track ID was seen
 frame_count = 0
 
+# VideoWriter setup
+output_file = 'output_video/processed_video.mp4'
+fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Codec
+fps = cap.get(cv2.CAP_PROP_FPS)  # Frame rate
+width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+out = cv2.VideoWriter(output_file, fourcc, fps, (width, height))
+
 def mouse_callback(event, x, y, flags, param):
     global start_time, selected_track_id, boxes, track_ids, last_seen_frame
 
@@ -59,7 +69,7 @@ def mouse_callback(event, x, y, flags, param):
                 selected_track_id = track_ids[i]
                 start_time = time.time()
                 last_seen_frame[selected_track_id] = param['frame_count']
-                print(f"Selected track ID: {selected_track_id}")
+                # print(f"Selected track ID: {selected_track_id}")
                 break
 
 def process_draw_Boundboxes(image, tracks, frame_count, classes_names=None):
@@ -93,7 +103,7 @@ def process_draw_Boundboxes(image, tracks, frame_count, classes_names=None):
             if start_time is not None and selected_track_id == track_id:
                 elapsed_time = int(time.time() - start_time)
                 cv2.rectangle(image, (0, 0), (200, 40), (255, 144, 30), -1)  # Rectangle dimensions and color
-                cv2.putText(image, f"Time-Tracker: {elapsed_time}sec", (15, 20),
+                cv2.putText(image, f"Time-Counter: {elapsed_time}sec", (15, 20),
                             cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.7, (190, 215, 255), 1, cv2.LINE_AA)
     return image
 
@@ -127,11 +137,13 @@ while cap.isOpened():
     # Maintain the selection for a few frames even if detection is skipped
     maintain_MisDetection(frame_count)
 
-    """Display frame."""
+    # Write the frame to the output video file
+    out.write(frame)
     cv2.imshow("Frame", frame)
     # Break Window
     if cv2.waitKey(1) & 0xFF == ord("q"):
         break
 
 cap.release()
+out.release()  # Release the video writer
 cv2.destroyAllWindows()
