@@ -8,10 +8,10 @@ model = YOLO("yolov8n.pt")
 
 ## Initialize Video Capture ##
 try:
-    # url = 'rtsp://192.168.100.4:8080/h264_ulaw.sdp'
-    # cap = cv2.VideoCapture(url)
+    url = 'rtsp://192.168.1.12:8080/h264_ulaw.sdp'
+    cap = cv2.VideoCapture(url)
     # For Test Sample Video
-    cap = cv2.VideoCapture("input_video/video2.mp4")
+    # cap = cv2.VideoCapture("input_video/video2.mp4")
 except:
     print("Error")
     raise ConnectionError
@@ -138,7 +138,7 @@ while cap.isOpened():
     maintain_MisDetection(frame_count)
 
     # Write the frame to the output video file
-    out.write(frame)
+    # out.write(frame)
     cv2.imshow("Frame", frame)
     # Break Window
     if cv2.waitKey(1) & 0xFF == ord("q"):
